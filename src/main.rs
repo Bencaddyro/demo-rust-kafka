@@ -2,10 +2,8 @@ use rdkafka::config::ClientConfig;
 use rdkafka::producer::{BaseProducer, BaseRecord, Producer};
 use rdkafka::consumer::{BaseConsumer, Consumer};
 use rdkafka::message::{Message};
-use rdkafka::topic_partition_list::Offset;
 
 use std::time::Duration;
-use std::thread;
 use std::str::from_utf8;
 use std::env::args;
 
@@ -35,6 +33,10 @@ fn produce(brokers: &str, topic: &str, key: &str, payload: &str) {
     println!("Sending to \"{}\", topic is \"{}\"", brokers, topic);
     let producer: BaseProducer = ClientConfig::new()
         .set("bootstrap.servers", brokers)
+        .set("security.protocol","sasl_plaintext")
+        .set("sasl.mechanism","PLAIN")
+        .set("sasl.username","demo-user")
+        .set("sasl.password","user-secret")
         .create()
         .expect("Producer creation failed");
 
@@ -59,6 +61,10 @@ fn consume(brokers: &str, topic: &str, group_id: &str) {
     let consumer: BaseConsumer = ClientConfig::new()
         .set("group.id", group_id)
         .set("bootstrap.servers", brokers)
+        .set("security.protocol","sasl_plaintext")
+        .set("sasl.mechanism","PLAIN")
+        .set("sasl.username","demo-user")
+        .set("sasl.password","user-secret")
         .create()
         .expect("Consumer creation failed");
 
