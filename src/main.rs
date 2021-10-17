@@ -33,10 +33,12 @@ fn produce(brokers: &str, topic: &str, key: &str, payload: &str) {
     println!("Sending to \"{}\", topic is \"{}\"", brokers, topic);
     let producer: BaseProducer = ClientConfig::new()
         .set("bootstrap.servers", brokers)
-        .set("security.protocol","sasl_plaintext")
+        .set("security.protocol","sasl_ssl")
         .set("sasl.mechanism","PLAIN")
         .set("sasl.username","demo-user")
         .set("sasl.password","user-secret")
+        .set("ssl.ca.location","./ca.crt")
+        .set("ssl.endpoint.identification.algorithm","https")
         .create()
         .expect("Producer creation failed");
 
@@ -55,16 +57,18 @@ fn produce(brokers: &str, topic: &str, key: &str, payload: &str) {
 
 }
 
-//Consume and display one message on one topic
+//Consume and display incoming message on one topic
 fn consume(brokers: &str, topic: &str, group_id: &str) {
     println!("Receiving on \"{}\", topic is \"{}\"", brokers, topic);
     let consumer: BaseConsumer = ClientConfig::new()
         .set("group.id", group_id)
         .set("bootstrap.servers", brokers)
-        .set("security.protocol","sasl_plaintext")
+        .set("security.protocol","sasl_ssl")
         .set("sasl.mechanism","PLAIN")
         .set("sasl.username","demo-user")
         .set("sasl.password","user-secret")
+        .set("ssl.ca.location","./ca.crt")
+        .set("ssl.endpoint.identification.algorithm","https")
         .create()
         .expect("Consumer creation failed");
 
